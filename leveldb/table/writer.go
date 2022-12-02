@@ -12,8 +12,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/golang/snappy"
-
+	"github.com/klauspost/compress/s2"
 	"github.com/syndtr/goleveldb/leveldb/comparer"
 	"github.com/syndtr/goleveldb/leveldb/filter"
 	"github.com/syndtr/goleveldb/leveldb/opt"
@@ -166,10 +165,10 @@ func (w *Writer) writeBlock(buf *util.Buffer, compression opt.Compression) (bh b
 	var b []byte
 	if compression == opt.SnappyCompression {
 		// Allocate scratch enough for compression and block trailer.
-		if n := snappy.MaxEncodedLen(buf.Len()) + blockTrailerLen; len(w.compressionScratch) < n {
+		if n := s2.MaxEncodedLen(buf.Len()) + blockTrailerLen; len(w.compressionScratch) < n {
 			w.compressionScratch = make([]byte, n)
 		}
-		compressed := snappy.Encode(w.compressionScratch, buf.Bytes())
+		compressed := s2.Encode(w.compressionScratch, buf.Bytes())
 		n := len(compressed)
 		b = compressed[:n+blockTrailerLen]
 		b[n] = blockTypeSnappyCompression
