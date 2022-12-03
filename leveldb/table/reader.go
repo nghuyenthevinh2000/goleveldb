@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/golang/snappy"
+	"github.com/klauspost/compress/s2"
 
 	"github.com/syndtr/goleveldb/leveldb/cache"
 	"github.com/syndtr/goleveldb/leveldb/comparer"
@@ -579,13 +579,13 @@ func (r *Reader) readRawBlock(bh blockHandle, verifyChecksum bool) ([]byte, erro
 	case blockTypeNoCompression:
 		data = data[:bh.length]
 	case blockTypeSnappyCompression:
-		decLen, err := snappy.DecodedLen(data[:bh.length])
+		decLen, err := s2.DecodedLen(data[:bh.length])
 		if err != nil {
 			r.bpool.Put(data)
 			return nil, r.newErrCorruptedBH(bh, err.Error())
 		}
 		decData := r.bpool.Get(decLen)
-		decData, err = snappy.Decode(decData, data[:bh.length])
+		decData, err = s2.Decode(decData, data[:bh.length])
 		r.bpool.Put(data)
 		if err != nil {
 			r.bpool.Put(decData)

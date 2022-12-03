@@ -3,8 +3,7 @@ module github.com/syndtr/goleveldb
 go 1.14
 
 require (
-	github.com/golang/snappy v0.0.4
-	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/klauspost/compress v1.15.12
 	github.com/onsi/ginkgo v1.14.0
 	github.com/onsi/gomega v1.10.1
 	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
